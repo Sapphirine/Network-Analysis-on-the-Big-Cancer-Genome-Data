@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Panomic Cancer Analyzer</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script type="text/javascript" src="scripts/jquery.parallax-1.1.3.js"></script>
+<script type="text/javascript" src="scripts/jquery.localscroll-1.2.7-min.js"></script>
+<script type="text/javascript" src="scripts/jquery.scrollTo-1.4.2-min.js"></script>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#nav').localScroll(800);
+	
+	//.parallax(xPosition, speedFactor, outerHeight) options:
+	//xPosition - Horizontal position of the element
+	//inertia - speed to move relative to vertical scroll. Example: 0.1 is one tenth the speed of scrolling, 2 is twice the speed of scrolling
+	//outerHeight (true/false) - Whether or not jQuery should use it's outerHeight option to determine when a section is in the viewport
+	$('#intro').parallax("50%", 0.1);
+	$('#second').parallax("80%", 0.1);
+	$('.bg').parallax("35%", 0.2);
+	$('#third').parallax("50%", 0.3);
+	$('.bg2').parallax("35%", 0.2);
+
+})
+</script>
+
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+<script type="text/javascript">
+
+	var arr = [ "network", "upload", "demo", "ci"];
+
+
+	$(function() {
+	    var options = {
+	            autoOpen: false,
+	            width: "960px",
+	            modal: true,
+				show: {
+	        		effect: "blind",
+	        		duration: 1000
+	      		},
+	      		hide: {
+	        		effect: "blind",
+	        		duration: 1000
+	      		},
+	      		position: { my: "center", at: "left+40%", of: window } 
+	    };
+	    $( arr ).each(function(index, val) {
+	            //var num = index;
+	             var num = arr[index];
+	            var dlg = $('#dg_' + num).dialog(options);
+	            $('#lab_' + num).click(function() {
+	                    dlg.dialog("open");
+	                    return false;
+	            });
+	           /* $('#lab_' + num).mouseout(function() {
+	                    dlg.dialog("close");
+	                    return false;
+	            });*/
+	    });
+	});
+
+
+</script>
+
+
+<div id="dg_ci" title="Please Type a gene symbol">
+	<form action="ci.php" method="post">
+    Type a gene symbol to analyze its predictive ability (concordance index):
+    <input type="text" name="featureName" id="featureName">
+    <input type="submit" value="Submit" name="submit">
+	</form>
+	<p><a href="http://en.wikipedia.org/wiki/List_of_human_genes">List of human genes on Wikipedia</p>
+</div>
+
+
+<div id="dg_network" title="Panomic Cancer Network"><p>Please drag the genes and the clinical features to discover the inferred relationships.</p></div>
+<div id="dg_upload" title="Upload the tumor profile">
+	<form action="upload.php" method="post" enctype="multipart/form-data">
+    Select profile to upload:
+    <input type="file" name="fileToUpload" id="fileToUpload">
+    <input type="submit" value="Upload Profile" name="submit">
+	</form>
+	<p>Download the <a href="tcga_example.csv">example profile</a>.</p>
+</div>
+
+
+<div id="dg_demo" title="Please select a patient for demo analysis">
+	<form action="demo.php" method="post">
+    Select profile (Patient id from 1 to 3,316) for demostrative analysis:
+    <input type="text" name="PatientID" id="PatientID">
+    <input type="submit" value="Submit" name="submit">
+	</form>
+</div>
+
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+// 
+var links = [
+{source:"age_at_initial_pathologic_diagnosis", target:"lymph_node_examined_count", type:"induce"},
+{source:"age_at_initial_pathologic_diagnosis", target:"PCP2", type:"induce"},
+{source:"age_at_initial_pathologic_diagnosis", target:"MSMB", type:"induce"},
+{source:"age_at_initial_pathologic_diagnosis", target:"PLEKHG4B", type:"induce"},
+{source:"lymph_node_examined_count", target:"age_at_initial_pathologic_diagnosis", type:"induce"},
+{source:"lymph_node_examined_count", target:"SATB2", type:"induce"},
+{source:"weight", target:"age_at_initial_pathologic_diagnosis", type:"induce"},
+{source:"weight", target:"lymph_node_examined_count", type:"induce"},
+{source:"weight", target:"IRX5", type:"induce"},
+{source:"weight", target:"SATB2", type:"induce"},
+{source:"weight", target:"HKDC1", type:"induce"},
+{source:"CYP4Z2P", target:"ANKRD30A", type:"induce"},
+{source:"CYP4Z2P", target:"ZYG11A", type:"induce"},
+{source:"CYP4Z2P", target:"PIAS3", type:"induce"},
+{source:"CYP4Z2P", target:"PRKCA", type:"induce"},
+{source:"C6orf127", target:"age_at_initial_pathologic_diagnosis", type:"induce"},
+{source:"C6orf127", target:"CYP4Z2P", type:"induce"},
+{source:"C6orf127", target:"ZYG11A", type:"induce"},
+{source:"C6orf127", target:"PCP2", type:"induce"},
+{source:"ANKRD30A", target:"SIX4", type:"induce"},
+{source:"ANKRD30A", target:"PGLYRP2", type:"induce"},
+{source:"CYP4Z1", target:"CYP4Z2P", type:"induce"},
+{source:"BNIPL", target:"ANKRD30A", type:"induce"},
+{source:"BNIPL", target:"IRX5", type:"induce"},
+{source:"BNIPL", target:"TFDP3", type:"induce"},
+{source:"BNIPL", target:"LOC642587", type:"induce"},
+{source:"BNIPL", target:"PCP2", type:"induce"},
+{source:"BNIPL", target:"FLJ45983", type:"induce"},
+{source:"BNIPL", target:"PRKCA", type:"induce"},
+{source:"BNIPL", target:"PGLYRP2", type:"induce"},
+{source:"IRX5", target:"ANKRD30A", type:"induce"},
+{source:"IRX5", target:"CLIP2", type:"induce"},
+{source:"IRX5", target:"SIX4", type:"induce"},
+{source:"IRX5", target:"MSMB", type:"induce"},
+{source:"IRX5", target:"PGLYRP2", type:"induce"},
+{source:"TFDP3", target:"ANKRD30A", type:"induce"},
+{source:"TFDP3", target:"ZYG11A", type:"induce"},
+{source:"LOC642587", target:"age_at_initial_pathologic_diagnosis", type:"induce"},
+{source:"LOC642587", target:"lymph_node_examined_count", type:"induce"},
+{source:"LOC642587", target:"IRX5", type:"induce"},
+{source:"LOC642587", target:"SATB2", type:"induce"},
+{source:"ZYG11A", target:"IRX5", type:"induce"},
+{source:"ZYG11A", target:"SIX4", type:"induce"},
+{source:"ZYG11A", target:"PLEKHG4B", type:"induce"},
+{source:"PCP2", target:"IRX5", type:"induce"},
+{source:"PCP2", target:"FLJ45983", type:"induce"},
+{source:"PCP2", target:"PRKCA", type:"induce"},
+{source:"PCP2", target:"PGLYRP2", type:"induce"},
+{source:"PIAS3", target:"BNIPL", type:"induce"},
+{source:"PIAS3", target:"IRX5", type:"induce"},
+{source:"PIAS3", target:"LOC642587", type:"induce"},
+{source:"PIAS3", target:"ZYG11A", type:"induce"},
+{source:"PIAS3", target:"SIX4", type:"induce"},
+{source:"PIAS3", target:"PLEKHG4B", type:"induce"},
+{source:"PIAS3", target:"SATB2", type:"induce"},
+{source:"CLIP2", target:"SATB2", type:"induce"},
+{source:"FLJ45983", target:"ANKRD30A", type:"induce"},
+{source:"FLJ45983", target:"IRX5", type:"induce"},
+{source:"FLJ45983", target:"PCP2", type:"induce"},
+{source:"FLJ45983", target:"SIX4", type:"induce"},
+{source:"SIX4", target:"ANKRD30A", type:"induce"},
+{source:"SIX4", target:"IRX5", type:"induce"},
+{source:"SIX4", target:"ZYG11A", type:"induce"},
+{source:"SIX4", target:"FLJ45983", type:"induce"},
+{source:"SIX4", target:"MSMB", type:"induce"},
+{source:"SIX4", target:"PLEKHG4B", type:"induce"},
+{source:"MSMB", target:"age_at_initial_pathologic_diagnosis", type:"induce"},
+{source:"MSMB", target:"SIX4", type:"induce"},
+{source:"PRKCA", target:"CYP4Z2P", type:"induce"},
+{source:"PRKCA", target:"IRX5", type:"induce"},
+{source:"PRKCA", target:"PCP2", type:"induce"},
+{source:"PRKCA", target:"CLIP2", type:"induce"},
+{source:"PLEKHG4B", target:"ZYG11A", type:"induce"},
+{source:"PLEKHG4B", target:"SIX4", type:"induce"},
+{source:"PLEKHG4B", target:"SATB2", type:"induce"},
+{source:"SATB2", target:"lymph_node_examined_count", type:"induce"},
+{source:"SATB2", target:"LOC642587", type:"induce"},
+{source:"SATB2", target:"CLIP2", type:"induce"},
+{source:"SATB2", target:"PLEKHG4B", type:"induce"},
+{source:"HKDC1", target:"LOC642587", type:"induce"},
+{source:"HKDC1", target:"ZYG11A", type:"induce"},
+{source:"HKDC1", target:"FLJ45983", type:"induce"},
+{source:"HKDC1", target:"SIX4", type:"induce"},
+{source:"HKDC1", target:"PRKCA", type:"induce"},
+{source:"HKDC1", target:"SATB2", type:"induce"},
+{source:"METTL7B", target:"lymph_node_examined_count", type:"induce"},
+{source:"METTL7B", target:"LOC642587", type:"induce"},
+{source:"METTL7B", target:"CLIP2", type:"induce"},
+{source:"METTL7B", target:"SIX4", type:"induce"},
+{source:"METTL7B", target:"PRKCA", type:"induce"},
+{source:"METTL7B", target:"PLEKHG4B", type:"induce"},
+{source:"METTL7B", target:"HKDC1", type:"induce"}
+
+
+];
+
+var nodes = {};
+
+// Compute the distinct nodes from the links.
+links.forEach(function(link) {
+  link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
+  link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+});
+
+var width = 900,
+    height = 600;
+
+var force = d3.layout.force()
+    .nodes(d3.values(nodes))
+    .links(links)
+    .size([width, height])
+    .linkDistance(60)
+    .charge(-300)
+    .on("tick", tick)
+    .start();
+
+var svg = d3.select("#dg_network").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+// Per-type markers, as they don't inherit styles.
+svg.append("defs").selectAll("marker")
+    .data(["suit", "licensing", "resolved"])
+  .enter().append("marker")
+    .attr("id", function(d) { return d; })
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 15)
+    .attr("refY", -1.5)
+    .attr("markerWidth", 6)
+    .attr("markerHeight", 6)
+    .attr("orient", "auto")
+  .append("path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+var path = svg.append("g").selectAll("path")
+    .data(force.links())
+  .enter().append("path")
+    .attr("class", function(d) { return "link " + d.type; })
+    .attr("marker-end", function(d) { return "url(#" + d.type + ")"; });
+
+var circle = svg.append("g").selectAll("circle")
+    .data(force.nodes())
+  .enter().append("circle")
+    .attr("r", 6)
+    .call(force.drag);
+
+var text = svg.append("g").selectAll("text")
+    .data(force.nodes())
+  .enter().append("text")
+    .attr("x", 8)
+    .attr("y", ".31em")
+    .text(function(d) { return d.name; });
+
+// Use elliptical arc path segments to doubly-encode directionality.
+function tick() {
+  path.attr("d", linkArc);
+  circle.attr("transform", transform);
+  text.attr("transform", transform);
+}
+
+function linkArc(d) {
+  var dx = d.target.x - d.source.x,
+      dy = d.target.y - d.source.y,
+      dr = Math.sqrt(dx * dx + dy * dy);
+  return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+}
+
+function transform(d) {
+  return "translate(" + d.x + "," + d.y + ")";
+}
+
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-203245-8', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+</head>
+
+<body>
+	<ul id="nav">
+		<li><a href="#intro" title="Next Section"><img src="images/dot.png" alt="Link" /></a></li>
+	    <li><a href="#second" title="Next Section"><img src="images/dot.png" alt="Link" /></a></li>
+	    <li><a href="#third" title="Next Section"><img src="images/dot.png" alt="Link" /></a></li>
+	    <li><a href="#fifth" title="Next Section"><img src="images/dot.png" alt="Link" /></a></li>
+	</ul>
+	
+	<div id="intro">
+		<div class="story" >
+	    	<div class="float-intro">
+			<h2>Panomic Cancer Analyzer</h2>
+	        <p>Introducing the first Big-Data-driven cancer diagnosis framework for twelve most widespread cacner types.</p>
+		<p>Based on the genome profiles from 3,316 cancer patients participated in <a href="https://tcga-data.nci.nih.gov/tcga/">NIH The Cancer Genome Atlas project</a>, we created a framework for precise diagnosis and treatment strategy planning. </p>
+	        </div>
+	    </div> <!--.story-->
+	</div> <!--#intro-->
+	
+
+
+	<div id="second">
+		<div class="story">
+	    	<div class="float-right">
+	            <h2>Collaborative Treatment Recommendation</h2>
+	            <p>We built a collaborative recommendation system for cancer diagnosis and treatment suggestion. The computational model was created using the most prognosis-associated features which were identified using the Hadoop-based concordance index function. We also reconstructed <a href="#" id="lab_network">the Bayesian network of these features</a> for further research.
+	            </p>
+	            <p><a href="#" id="lab_ci">Click to evaluate the CI of the 20,533 features</a>.</p>
+	            <p>We made this framework an open-source project. Visit our <a href="https://github.com/th86">Github repository</a>.</p>
+	        </div>
+
+	    </div> <!--.story-->
+	    <div class="bg"></div>
+	</div> <!--#second-->
+	
+	<div id="third">
+		<div class="story">
+	    	<div class="float-left">
+	        	<h2>One click analysis</h2>
+	            <p>Medical professionals and patients can upload and analyze their high-throughpht mRNA profiles to Cancer Analyzer, and see the diagnosis, prognosis prediction, and the treatment suggestion within seconds. The accuracy of treatment suggestion is 87.24%*.</p>
+	            <p><a href="#" id="lab_upload">Upload and analyze a profile.</a></p>
+	            <p>Or try the <a href="#" id="lab_demo">demo project</a>.</p>
+	            <p>*LOOCV-TPR on the n=3,316 data set.</p>
+	        </div>
+	    </div> <!--.story-->
+	  	</div> <!--#third-->
+	
+	<div id="fifth">
+		<div class="story">
+		    <p>Let's beat cancer with Big Data Analytics.</p>
+	        
+	        <h2>Tai-Hsien Ou Yang (Architecture, Algorithms, Analysis, and Web Facility Implementation)</h2>
+	       	<h2>Kaiyi Zhu (HBase connection)</h2>
+	        <ul>
+	            <li><strong>GitHub</strong>: <a href="https://github.com/th86" title="Follow Tai-Hsien Ou Yang on GitHub">Tai-Hsien Ou Yang</a></li>
+	        </ul>
+	        
+	        <p>This is the final project for <a href="http://www.ee.columbia.edu/~cylin/course/bigdata/" title="EECS E6893: Big Data Analytics">EECS E6893: Big Data Analytics</a> at Columbia University. All results are only for demonstration. Please consult your physician with any questions or concerns and follow your physician's order.</p>
+	        
+	        <h2>Credits</h2>
+	        <p>The tools and data sets used in this project:</p>
+	        <ul>
+	        	<li><a href="https://tcga-data.nci.nih.gov/tcga/">NIH The Cancer Genome Atlas project</a></li>
+	        	<li><a href="http://hadoop.apache.org/">Apache Hadoop</a></li>
+	        	<li><a href="http://cran.r-project.org/">R</a></li>
+	        	<li><a href="https://github.com/IanLunn/jQuery-Parallax">jQuery Parallax</a></li>
+	        	<li><a href="http://graphicburger.com/">GraphicBurger</a></li>
+	        	<li><a href="http://mika-rika-free.jp/">Mika-Rika</a></li>
+	        		        	
+	        </ul>
+	    </div> <!--.story-->
+	</div> <!--#fifth-->
+</body>
+</html>
