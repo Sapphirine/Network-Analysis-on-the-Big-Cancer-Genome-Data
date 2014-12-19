@@ -4,8 +4,9 @@ Network Analysis on the Big Cancer Genome Data
 
 The package we provided here contains the toolkit for performing two types of MapReduce-based concordance index evaluation in Hadoop environment and the HBase tools for data importing and exporting, as well as the R script files for preprocessing, feature analysis and Bayesian inference. 
 
-For the treatment engine, we include the source code of the engine and the implementation of the entire web service. The detailed instruction and screenshots of those five parts of our package is available as the following:
+For the treatment engine, we include the source code of the engine and the implementation of the entire web service. The detailed instruction and screenshots of those five parts of our package is available as the following.
 
+We also provide the demo video at [YouTube](https://www.youtube.com/watch?v=kcP1PLSFb9o "Demo video").
 
 ##1	The Hadoop-based concordance index (CI) toolkit
 The source code and the executable jar is located at ./CI/
