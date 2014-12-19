@@ -6,7 +6,7 @@ The package we provided here contains the toolkit for performing two types of Ma
 
 For the treatment engine, we include the source code of the engine and the implementation of the entire web service. The detailed instruction and screenshots of those five parts of our package is available as the following.
 
-We also provide the demo video at [YouTube](https://www.youtube.com/watch?v=kcP1PLSFb9o "Demo video").
+We provide the final report on the algorithms and programs we created for this project [here](https://github.com/Sapphirine/Network-Analysis-on-the-Big-Cancer-Genome-Data/blob/master/BigData_final_report_v6_201412-4.pdf "final report"). and the demo video at [YouTube](https://www.youtube.com/watch?v=kcP1PLSFb9o "Demo video").
 
 ##1	The Hadoop-based concordance index (CI) toolkit
 The source code and the executable jar is located at ./CI/
