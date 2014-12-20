@@ -1,6 +1,3 @@
-// HTableExample.java - import big data from a CSV formatted file to a HBase table
-// @author Kaiyi Zhu (kz2232@columbia.edu)
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,6 +13,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 
 public class HTableExample {
+	
+	static long startTime = System.nanoTime();
 
 	public static void main(String[] args) throws IOException {
 		
@@ -30,7 +29,7 @@ public class HTableExample {
 		 * facilating the next step of HBase import
 		 */
 		List<List<String>> csvArray = new ArrayList<List<String>>();
-		csvArray = readCSV(TCGA.csv");		
+		csvArray = readCSV("test.csv");		
 		
 		
 		for (int col = 1; col < csvArray.get(1).size(); col++) {
@@ -51,6 +50,9 @@ public class HTableExample {
 			 */
 			table.put(p);
 		}
+		
+		long endTime = System.nanoTime();
+		System.out.println("Took "+(endTime-startTime) + " ns");
 		
 		}
 	
